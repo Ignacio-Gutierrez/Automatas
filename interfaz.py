@@ -1,12 +1,17 @@
-from tkinter import Tk, Frame, Label, Entry, Button
+from main import AutomasYGramatica
+
+import csv
+import re
+import pandas as pd
+from tkinter import Tk, Frame, Label, Entry, Button, filedialog
 creo = 200100100
 
-class AutomasYGramaticaApp:
+class Interfaz:
     def __init__(self):
         self.root = Tk()
         self.root.title('Autómatas y Gramática')
         self.root.geometry('1000x574')
-        self.creo = 1
+ 
         self.create_frames()
         self.create_widgets()
 
@@ -26,7 +31,7 @@ class AutomasYGramaticaApp:
 
     def create_widgets(self):
 
-        btn_imp = Button(self.frame1, text='Importar', font=30)
+        btn_imp = Button(self.frame1, text='Importar', command=AutomasYGramatica.open_file, font=30)
         btn_imp.place(x=20, y=20, width=125, height=30)
 
         btn_exp = Button(self.frame1, text='Exportar', font=30)
@@ -63,4 +68,4 @@ class AutomasYGramaticaApp:
         lbl5.configure(bg='#77dd77')
         lbl5.place(x=600, y=3, width=170, height=40)
 
-app = AutomasYGramaticaApp()
+app = Interfaz()
