@@ -1,12 +1,10 @@
-from main import AutomasYGramatica
-
+from main import AutomasYGramatica as ag
 import csv
 import re
 import pandas as pd
 from tkinter import Tk, Frame, Label, Entry, Button, filedialog
-creo = 200100100
 
-class Interfaz:
+class Interfaz():
     def __init__(self):
         self.root = Tk()
         self.root.title('Autómatas y Gramática')
@@ -31,7 +29,7 @@ class Interfaz:
 
     def create_widgets(self):
 
-        btn_imp = Button(self.frame1, text='Importar', command=AutomasYGramatica.open_file, font=30)
+        btn_imp = Button(self.frame1, text='Importar', command=ag.import_file, font=30)
         btn_imp.place(x=20, y=20, width=125, height=30)
 
         btn_exp = Button(self.frame1, text='Exportar', font=30)
@@ -40,8 +38,8 @@ class Interfaz:
         btn_start = Button(self.frame1, text='Iniciar', font=30)
         btn_start.place(x=650, y=17, width=65, height=65)
 
-        btn_end = Button(self.frame3, text='Salir', font=30)
-        btn_end.place(x=855, y=8, width=125, height=30)
+        btn_stop = Button(self.frame3, text='Salir', command=lambda:ag.close(self.root), font=30)
+        btn_stop.place(x=855, y=8, width=125, height=30)
 
 
         lbl1 = Label(self.frame1, text='Fecha de inicio "AAAA-MM-DD":', font=12)
@@ -56,15 +54,15 @@ class Interfaz:
         self.txt2 = Entry(self.frame1, bg='white', fg='black')
         self.txt2.place(x=515, y=55, width=100, height=25)
 
-        lbl3 = Label(self.frame3, text=f'Datos Importados: {creo}', font=12)
+        lbl3 = Label(self.frame3, text=f'Datos Importados: {ag().data_imp}', font=12)
         lbl3.configure(bg='#77dd77')
         lbl3.place(x=40, y=3, width=250, height=40)
 
-        lbl4 = Label(self.frame3, text=f'Conectados: {creo}', font=12)
+        lbl4 = Label(self.frame3, text=f'Conectados: {ag().connected}', font=12)
         lbl4.configure(bg='#77dd77')
         lbl4.place(x=345, y=3, width=200, height=40)
 
-        lbl5 = Label(self.frame3, text=f'Errores: {creo}', font=12)
+        lbl5 = Label(self.frame3, text=f'Errores: {ag().errors}', font=12)
         lbl5.configure(bg='#77dd77')
         lbl5.place(x=600, y=3, width=170, height=40)
 

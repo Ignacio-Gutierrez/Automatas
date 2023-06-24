@@ -4,7 +4,6 @@ import pandas as pd
 from tkinter import filedialog
 
 
-
 class AutomasYGramatica:
     def __init__(self):
         self.data_t = []
@@ -18,8 +17,8 @@ class AutomasYGramatica:
         
         self.column = ['ID',
                         'ID_Sesion',
-                       'ID_Conexión_unico',
-                       'Usuario','IP_NAS_AP',
+                        'ID_Conexión_unico',
+                        'Usuario','IP_NAS_AP',
                         'Tipo__conexión','Inicio_de_Conexión_Dia',
                         'Inicio_de_Conexión_Hora',
                         'FIN_de_Conexión_Dia','FIN_de_Conexión_Hora',
@@ -31,9 +30,10 @@ class AutomasYGramatica:
                         'Razon_de_Terminación_de_Sesión',
                         '',
                         '']
-        self.errors = 0
+        
         self.data_imp = 0
-        self.conected = 0
+        self.connected = 0  
+        self.errors = 0
 
     def import_file():
         readed = filedialog.askopenfilename(title='Abrir archivo .csv', filetypes=[('Archivos CSV', '*.csv')]) 
@@ -45,5 +45,5 @@ class AutomasYGramatica:
     def start(self):
         pass
 
-    def close(self):
-        pass
+    def close(window):
+        window.destroy()
