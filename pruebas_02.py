@@ -2,7 +2,7 @@ import csv
 import re
 import pandas as pd
 
-file = '/home/ignacio/Desktop/Automatas_y_Gramatica/pruebas_mal _caso copy.csv'
+file = '/home/ignacio/Desktop/Automatas_y_Gramatica/pruebas_mal_caso.csv'
 
 data_table = []
 datos_en_rango = []
