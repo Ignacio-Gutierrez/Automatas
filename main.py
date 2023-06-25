@@ -4,7 +4,7 @@ import pandas as pd
 from tkinter import filedialog
 
 
-class AutomasYGramatica:
+class Funciones:
     def __init__(self):
         self.data_t = []
         self.data_rang = []
