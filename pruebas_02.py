@@ -28,7 +28,7 @@ for row in data_table:
     fec_ini = row[6]
     fec_fin = row[8]
 
-    if fecha.match(fec_ini) and fecha.match(fec_fin):
+    if fecha.match(fec_ini) or fecha.match(fec_fin):
         if fecha_ini <= fec_ini <= fecha_fin or fecha_ini <= fec_fin <= fecha_fin:
             datos_en_rango.append(row)
     else:
