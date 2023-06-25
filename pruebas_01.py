@@ -19,9 +19,7 @@ with open(file, 'r') as data:
     readed = csv.reader(data)
 
     for file in readed:
-        data_file = file
-        data_table.append(data_file)
-
+        data_table.append(file)
 
 fecha = re.compile(r"^(2019|202[0-3])([-])(0[1-9]|1[0-2])([-])(0[1-9]|[1-2][0-9]|3[0-1])$")    #fechas que existen 
 
@@ -40,6 +38,7 @@ if fecha.match(fecha_ini) and fecha.match(fecha_fin):
         if fecha.match(fec_ini) and fecha.match(fec_fin):
             if (fecha_ini <= fec_ini <= fecha_fin) or (fecha_ini <= fec_fin <= fecha_fin):
                 datos_en_rango.append(i)
+                print(pd.DataFrame(i))
         else:
             if fec_ini == 'Inicio_de_Conexión_Dia':
                 pass
