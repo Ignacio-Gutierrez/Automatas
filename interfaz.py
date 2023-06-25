@@ -4,7 +4,7 @@ import re
 import pandas as pd
 from tkinter import Tk, Frame, Label, Entry, Button, filedialog
 
-class Interfaz():
+class Interfaz:
     def __init__(self):
         self.root = Tk()
         self.root.title('Autómatas y Gramática')
@@ -29,13 +29,13 @@ class Interfaz():
 
     def create_widgets(self):
 
-        btn_imp = Button(self.frame1, text='Importar', command=ag.import_file, font=30)
+        btn_imp = Button(self.frame1, text='Importar', command=lambda:ag().import_file(), font=30)
         btn_imp.place(x=20, y=20, width=125, height=30)
 
         btn_exp = Button(self.frame1, text='Exportar', font=30)
         btn_exp.place(x=855, y=20, width=125, height=30)
 
-        btn_start = Button(self.frame1, text='Iniciar', font=30)
+        btn_start = Button(self.frame1, text='Iniciar', command=lambda:ag().start(self.txt1.get(), self.txt2.get()), font=30)
         btn_start.place(x=650, y=17, width=65, height=65)
 
         btn_stop = Button(self.frame3, text='Salir', command=lambda:ag.close(self.root), font=30)
