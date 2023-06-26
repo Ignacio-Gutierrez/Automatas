@@ -1,7 +1,9 @@
 import csv
 import re
 import pandas as pd
-from tkinter import filedialog
+from tkinter import filedialog, IntVar
+from openpyxl import Workbook
+
 
 
 class Funciones:
@@ -31,24 +33,36 @@ class Funciones:
                         '',
                         '']
         
-        self.data_imp = 0
-        self.connected = 0  
-        self.errors = 0
+        self.data_imp = IntVar()
+        self.connected = IntVar()  
+        self.errors = IntVar()
         self.fecha = re.compile(r"^(2019|202[0-3])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$")
 
 
     def import_file(self):
-        data = filedialog.askopenfilename(title='Abrir archivo .csv', filetypes=[('Archivos CSV', '*.csv')]) 
-        with open(data, 'r') as file:   
+        data_in = filedialog.askopenfilename(title='Abrir archivo .csv', filetypes=[('Archivos CSV', '*.csv')]) 
+        with open(data_in, 'r') as file:   
             reader = csv.reader(file)
             self.data_t = list(reader)
-        
 
-    def export_file():
-        pass
+            self.data_imp.set(int(len(self.data_t)-1))
+
+
+    def export_file(self):
+        data_out = filedialog.asksaveasfilename(title='Guardar archivo', filetypes=[('Archivos Excel', '*.xlsx'), ('Archivos CSV', '*.csv')])
+        if data_out:
+            if data_out.endswith('.xlsx'):
+                df = pd.DataFrame(self.data_t)
+                df.to_excel(data_out, index=False)
+            elif data_out.endswith('.csv'):
+                with open(data_out, 'w', newline='') as output:
+                    writer = csv.writer(output)
+                    writer.writerows(self.data_t)
 
     def start(self, fecha_ini, fecha_fin):
-        print(f"procesando {fecha_ini}{fecha_fin}")
+        self.data_rang = []
+        self.error_rang = []
+
         for row in self.data_t:
             fec_ini = row[6]
             fec_fin = row[8]
@@ -59,6 +73,9 @@ class Funciones:
             else:
                 if fec_ini != 'Inicio_de_Conexión_Dia':
                     self.error_rang.append(row)
+
+        self.connected.set(int(len(self.data_rang)))
+        self.errors.set(int(len(self.error_rang)))
 
         pd.set_option('display.max_rows', None)
         df_ok = pd.DataFrame(self.data_rang, columns=self.column)
