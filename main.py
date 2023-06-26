@@ -9,6 +9,7 @@ from openpyxl import Workbook
 class Funciones:
     def __init__(self):
         self.data_t = []
+        self.data_filt = []
         self.data_rang = []
         self.error_rang = []
         self.column_n = ['ID',
@@ -20,10 +21,13 @@ class Funciones:
         self.column = ['ID',
                         'ID_Sesion',
                         'ID_Conexión_unico',
-                        'Usuario','IP_NAS_AP',
-                        'Tipo__conexión','Inicio_de_Conexión_Dia',
+                        'Usuario',
+                        'IP_NAS_AP',
+                        'Tipo__conexión',
+                        'Inicio_de_Conexión_Dia',
                         'Inicio_de_Conexión_Hora',
-                        'FIN_de_Conexión_Dia','FIN_de_Conexión_Hora',
+                        'FIN_de_Conexión_Dia',
+                        'FIN_de_Conexión_Hora',
                         'Session_Time',
                         'Input_Octects',
                         'Output_Octects',
@@ -33,10 +37,29 @@ class Funciones:
                         '',
                         '']
         
+        self.patterns = [
+                        re.compile(r"^\d+$"),  # ID
+                        re.compile(r"^(([0-9]|[A-F]){8}|([0-9]|[A-F]){16})(-([0-9]|[A-F]){8})?$"),  # ID_Sesion
+                        re.compile(r"^([0-9]|[a-f]){16}$"),  # ID_Conexión_unico
+                        re.compile(r"^\D+$"),  # Usuario
+                        re.compile(r"^(?:\d{1,3}\.){3}\d{1,3}$"),  # IP_NAS_AP
+                        # Tipo__conexión
+                        re.compile(r"^(2019|202[0-3])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$"),  # Inicio_de_Conexión_Dia
+                        re.compile(r"^([0-1][0-9]|[2][0-3]):([0-5][0-9]):([0-5][0-9])$"),  # Inicio_de_Conexión_Hora
+                        re.compile(r"^(2019|202[0-3])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$"),  # FIN_de_Conexión_Dia
+                        re.compile(r"^([0-1][0-9]|[2][0-3]):([0-5][0-9]):([0-5][0-9])$"),  # FIN_de_Conexión_Hora
+                        re.compile(r"^\d+$"),  # Session_Time
+                        re.compile(r"^\d+$"),  # Input_Octects
+                        re.compile(r"^\d+$"),  # Output_Octects
+                        re.compile(r"^(([A-F]|[0-9]){2}-){5}([A-F]|[0-9]){2}:[A-Z]{4}$"),  # MAC_AP
+                        re.compile(r"^(([A-F]|[0-9]){2}-){5}([A-F]|[0-9]){2}$")  # MAC_Cliente
+                        # Razon_de_Terminación_de_Sesión
+                        ]
+        
         self.data_imp = IntVar()
         self.connected = IntVar()  
         self.errors = IntVar()
-        self.fecha = re.compile(r"^(2019|202[0-3])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$")
+        self.fecha = re.compile(r"^(2019|202[0-3])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$") #AAAA-MM-DD
 
 
     def import_file(self):
@@ -59,6 +82,9 @@ class Funciones:
                     writer = csv.writer(output)
                     writer.writerows(self.data_t)
 
+    def filter(self):
+        pass
+
     def start(self, fecha_ini, fecha_fin):
         self.data_rang = []
         self.error_rang = []
@@ -67,7 +93,7 @@ class Funciones:
             fec_ini = row[6]
             fec_fin = row[8]
 
-            if self.fecha.match(fec_ini) or self.fecha.match(fec_fin):
+            if self.fecha.match(fec_ini) and self.fecha.match(fec_fin):
                 if fecha_ini <= fec_ini <= fecha_fin or fecha_ini <= fec_fin <= fecha_fin:
                     self.data_rang.append(row)
             else:
