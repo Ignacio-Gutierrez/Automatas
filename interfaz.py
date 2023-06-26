@@ -39,7 +39,7 @@ class Interfaz:
         btn_exp = Button(self.frame1, text='Exportar', command=self.func.export_file,font=30)
         btn_exp.place(x=855, y=20, width=125, height=30)
 
-        btn_start = Button(self.frame1, text='Iniciar', command=lambda: self.func.start(self.txt2.get(), self.txt3.get()), font=30)
+        btn_start = Button(self.frame1, text='Iniciar', command=lambda: self.func.start(self.txt1.get(), self.txt2.get(), self.txt3.get()), font=30)
         btn_start.place(x=650, y=17, width=65, height=65)
 
         btn_stop = Button(self.frame3, text='Salir', command=lambda: Funciones.close(self.root), font=30)
