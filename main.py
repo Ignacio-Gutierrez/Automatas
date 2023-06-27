@@ -16,7 +16,8 @@ class Funciones:
                         'Usuario',
                         'Inicio_de_Conexión_Dia',
                         'FIN_de_Conexión_Dia',
-                        'Session_Time']
+                        'Session_Time',
+                        'MAC_Cliente']
         
         self.column = ['ID',
                         'ID_Sesion',
@@ -75,11 +76,12 @@ class Funciones:
         data_out = filedialog.asksaveasfilename(title='Guardar archivo', filetypes=[('Archivos Excel', '*.xlsx'), ('Archivos CSV', '*.csv')])
         if data_out:
             if data_out.endswith('.xlsx'):
-                df = pd.DataFrame(self.data_range)
+                df = pd.DataFrame(self.data_range, columns=self.column)
                 df.to_excel(data_out, index=False)
             elif data_out.endswith('.csv'):
                 with open(data_out, 'w', newline='') as output:
                     writer = csv.writer(output)
+                    writer.writerow(self.column)
                     writer.writerows(self.data_range)
     
     def export_file_error(self):
@@ -105,10 +107,7 @@ class Funciones:
                     self.error_range.append(self.data_t[row])
                     break
             else:
-                self.data_filt.append(self.data_t[row])
-            
-        for lista in self.data_filt:
-            del lista[-2:]
+                self.data_filt.append((self.data_t[row])[:-2])
 
         self.errors.set(int(len(self.error_range))-1)
 
@@ -140,7 +139,7 @@ class Funciones:
                 next_user_id += 1
 
         pd.set_option('display.max_rows', None)
-        df = pd.DataFrame(self.users_list, columns=self.column_n)
+        df = pd.DataFrame(self.users_list, columns=self.column_n[:-1])
 
         print(df.to_string(index=False))
 
@@ -161,18 +160,15 @@ class Funciones:
                         if fecha_ini <= row[6] <= fecha_fin or fecha_ini <= row[6] <= fecha_fin:
                             if name_user == row[3]:
                                 self.data_range.append(row)
-                
                 elif self.patterns[0].match(name_user):
                     for row in self.data_filt:
                         if fecha_ini <= row[6] <= fecha_fin or fecha_ini <= row[6] <= fecha_fin:
                             if self.dicti_users[int(name_user)] == row[3]:
                                 self.data_range.append(row)
-
                 else:
                     print(f'{name_user} no es válido.')
             else:
                 print('El periodo de fechas no es correcto.')
-
         else:
             print('La fecha ingresada no está en un formato válido.')
 
@@ -181,13 +177,10 @@ class Funciones:
         if self.data_range:
             pd.set_option('display.max_rows', None)
             df = pd.DataFrame(self.data_range, columns=self.column)
-
-            df = df[self.column_n]
+            df = df[self.column_n[:-1]]
             print(df.to_string(index=False))
-        
         else:
             print('No hay datos')
-
 
     def close(window):
         window.destroy()
