@@ -2,9 +2,6 @@ import csv
 import re
 import pandas as pd
 from tkinter import filedialog, IntVar
-from openpyxl import Workbook
-
-
 
 class Funciones:
     def __init__(self):
@@ -13,7 +10,7 @@ class Funciones:
         self.data_range = []
         self.error_range = []
         self.users_list = []
-        self.dict = {}
+        self.dicti_users = {}
 
         self.column_n = ['ID',
                         'Usuario',
@@ -75,16 +72,27 @@ class Funciones:
         
         self.filter_user()
 
-    def export_file(self):
+    def export_file_range(self):
         data_out = filedialog.asksaveasfilename(title='Guardar archivo', filetypes=[('Archivos Excel', '*.xlsx'), ('Archivos CSV', '*.csv')])
         if data_out:
             if data_out.endswith('.xlsx'):
-                df = pd.DataFrame(self.data_t)
+                df = pd.DataFrame(self.data_range)
                 df.to_excel(data_out, index=False)
             elif data_out.endswith('.csv'):
                 with open(data_out, 'w', newline='') as output:
                     writer = csv.writer(output)
-                    writer.writerows(self.data_t)
+                    writer.writerows(self.data_range)
+    
+    def export_file_error(self):
+        data_out = filedialog.asksaveasfilename(title='Guardar archivo', filetypes=[('Archivos Excel', '*.xlsx'), ('Archivos CSV', '*.csv')])
+        if data_out:
+            if data_out.endswith('.xlsx'):
+                df = pd.DataFrame(self.error_range)
+                df.to_excel(data_out, index=False)
+            elif data_out.endswith('.csv'):
+                with open(data_out, 'w', newline='') as output:
+                    writer = csv.writer(output)
+                    writer.writerows(self.error_range)
 
     def filter_user(self):
         self.data_filt = []
@@ -137,36 +145,46 @@ class Funciones:
         for u in self.users_list:
             user_id = u[0]
             user = u[1]
-            self.dict[user_id] = user
+            self.dicti_users[user_id] = user
         
-    def start(self,name_user ,fecha_ini, fecha_fin):
+    def start(self, name_user, fecha_ini, fecha_fin):
         self.data_range = []
 
-        try:
-            for row in self.data_filt:
-                    if self.patterns[3].match(name_user):
-                        if name_user == row[3]:
-                            self.data_range.append(row)
+        print('Procesando SOLICITUD')
+
+        if self.patterns[6].match(fecha_ini) and self.patterns[8].match(fecha_fin):
+            if fecha_ini <= fecha_fin:
+                if self.patterns[3].match(name_user):
+                    for row in self.data_filt:
+                        if fecha_ini <= row[6] <= fecha_fin or fecha_ini <= row[6] <= fecha_fin:
+                            if name_user == row[3]:
+                                self.data_range.append(row)
                 
-                    if self.patterns[0].match(name_user):
-                        if self.dict[int(name_user)] == row[3]:
-                            self.data_range.append(row)
+                elif self.patterns[0].match(name_user):
+                    for row in self.data_filt:
+                        if fecha_ini <= row[6] <= fecha_fin or fecha_ini <= row[6] <= fecha_fin:
+                            if self.dicti_users[int(name_user)] == row[3]:
+                                self.data_range.append(row)
 
-            self.connected.set(int(len(self.data_range)))
-            
-
-            if self.data_range != []:
-                pd.set_option('display.max_rows', None)
-                df = pd.DataFrame(self.data_range, columns=self.column)
-
-                df = df[self.column_n]
-                print(df.to_string(index=False))
-
+                else:
+                    print(f'{name_user} no es válido.')
             else:
-                print(f'{name_user} no es un Usuario válido')
+                print('El periodo de fechas no es correcto.')
 
-        except:
-            print(f'{name_user} no es un ID válido')
+        else:
+            print('La fecha ingresada no está en un formato válido.')
+
+        self.connected.set(int(len(self.data_range)))        
+
+        if self.data_range:
+            pd.set_option('display.max_rows', None)
+            df = pd.DataFrame(self.data_range, columns=self.column)
+
+            df = df[self.column_n]
+            print(df.to_string(index=False))
+        
+        else:
+            print('No hay datos')
 
 
     def close(window):

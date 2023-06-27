@@ -3,8 +3,6 @@ import csv
 import re
 import pandas as pd
 from tkinter import Tk, Frame, Label, Entry, Button, filedialog, IntVar
-from openpyxl import Workbook
-
 
 class Interfaz:
     def __init__(self):
@@ -36,13 +34,16 @@ class Interfaz:
         btn_imp = Button(self.frame1, text='Importar', command=self.func.import_file, font=30)
         btn_imp.place(x=20, y=20, width=125, height=30)
 
-        btn_exp = Button(self.frame1, text='Exportar', command=self.func.export_file,font=30)
-        btn_exp.place(x=855, y=20, width=125, height=30)
+        btn_exp_r = Button(self.frame1, text='Exportar', command=self.func.export_file_range,font=30, activebackground="#5785ff") #Lo buscado
+        btn_exp_r.place(x=855, y=20, width=125, height=30)
 
-        btn_start = Button(self.frame1, text='Iniciar', command=lambda: self.func.start(self.txt1.get(), self.txt2.get(), self.txt3.get()), font=30)
+        btn_exp_e = Button(self.frame1, text='Exportar Errores', command=self.func.export_file_error,font=("Arial", 11), activebackground="#ff5757") #Errores
+        btn_exp_e.place(x=855, y=60, width=125, height=30)
+
+        btn_start = Button(self.frame1, text='Iniciar', command=lambda: self.func.start(self.txt1.get(), self.txt2.get(), self.txt3.get()), font=30, activebackground="#5785ff")
         btn_start.place(x=650, y=17, width=65, height=65)
 
-        btn_stop = Button(self.frame3, text='Salir', command=lambda: Funciones.close(self.root), font=30)
+        btn_stop = Button(self.frame3, text='Salir', command=lambda: Funciones.close(self.root), bg="#ff7777",font=30, activebackground="#ff4c4c")
         btn_stop.place(x=855, y=8, width=125, height=30)
 
         lbl1 = Label(self.frame1, text='Usuario:', font=12)
@@ -70,7 +71,7 @@ class Interfaz:
         lbl4_v.configure(bg='#77dd77')
         lbl4_v.place(x=190, y=3, width=100, height=40)
 
-        lbl5_t = Label(self.frame3, text='Conectados:', font=12)
+        lbl5_t = Label(self.frame3, text='Conexiones:', font=12)
         lbl5_t.configure(bg='#77dd77')
         lbl5_t.place(x=345, y=3, width=100, height=40)
         lbl5_v = Label(self.frame3, textvariable=self.func.connected, font=12, anchor='w')
