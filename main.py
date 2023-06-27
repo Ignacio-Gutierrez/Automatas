@@ -13,17 +13,13 @@ class Funciones:
         self.data_range = []
         self.error_range = []
         self.users_list = []
+        self.dict = {}
 
-        self.column_u = ['Usuario',
-                         'Inicio_de_Conexión_Dia',
-                         'FIN_de_Conexión_Dia',
-                         'Session_Time']
-        
         self.column_n = ['ID',
-                         'Usuario',
-                         'Inicio_de_Conexión_Dia',
-                         'FIN_de_Conexión_Dia',
-                         'Session_Time']
+                        'Usuario',
+                        'Inicio_de_Conexión_Dia',
+                        'FIN_de_Conexión_Dia',
+                        'Session_Time']
         
         self.column = ['ID',
                         'ID_Sesion',
@@ -91,7 +87,7 @@ class Funciones:
                     writer.writerows(self.data_t)
 
     def filter_user(self):
-        self.data_range = []
+        self.data_filt = []
         self.error_range = []
 
         print('Filtrando Usuarios\n')
@@ -102,60 +98,76 @@ class Funciones:
                     self.error_range.append(self.data_t[row])
                     break
             else:
-                self.data_range.append(self.data_t[row])
+                self.data_filt.append(self.data_t[row])
 
-        self.errors.set(int(len(self.error_range)))
-        
+        self.errors.set(int(len(self.error_range))-1)
+
         print('Filtrando Usuarios 2\n')
 
-        for row in self.data_range:
+        next_user_id = 1
+
+        for row in self.data_filt:
             user = row[3]
             date_first = row[6]
             date_last = row[8]
             session_time = int(row[10])
             user_exist = None
+            
             for col in self.users_list:
-                if col[0] == user:
+                if col[1] == user:
                     user_exist = col
                     break
+            
             if user_exist:
-                if date_first < user_exist[1]:
-                    user_exist[1] = date_first
-                if date_last > user_exist[2]:
-                    user_exist[2] = date_last
+                if date_first < user_exist[2]:
+                    user_exist[2] = date_first
+                if date_last > user_exist[3]:
+                    user_exist[3] = date_last
                 else:
-                    user_exist[3] += session_time
+                    user_exist[4] += session_time
             else:
-                self.users_list.append([user, date_first, date_last, session_time ])
+                self.users_list.append([next_user_id, user, date_first, date_last, session_time])
+                next_user_id += 1
 
         pd.set_option('display.max_rows', None)
-        df = pd.DataFrame(self.users_list, columns=self.column_u)
-        df.index += 1
+        df = pd.DataFrame(self.users_list, columns=self.column_n)
 
-        print(df)
+        print(df.to_string(index=False))
+
+        for u in self.users_list:
+            user_id = u[0]
+            user = u[1]
+            self.dict[user_id] = user
         
     def start(self,name_user ,fecha_ini, fecha_fin):
         self.data_range = []
-        self.error_range = []
 
-        for row in self.data_t:
-            fec_ini = row[6]
-            fec_fin = row[8]
+        try:
+            for row in self.data_filt:
+                    if self.patterns[3].match(name_user):
+                        if name_user == row[3]:
+                            self.data_range.append(row)
+                
+                    if self.patterns[0].match(name_user):
+                        if self.dict[int(name_user)] == row[3]:
+                            self.data_range.append(row)
 
-            if self.fecha.match(fec_ini) and self.fecha.match(fec_fin):
-                if fecha_ini <= fec_ini <= fecha_fin or fecha_ini <= fec_fin <= fecha_fin:
-                    self.data_range.append(row)
+            self.connected.set(int(len(self.data_range)))
+            
 
+            if self.data_range != []:
+                pd.set_option('display.max_rows', None)
+                df = pd.DataFrame(self.data_range, columns=self.column)
 
-        self.connected.set(int(len(self.data_range)))
-        self.errors.set(int(len(self.error_range)))
+                df = df[self.column_n]
+                print(df.to_string(index=False))
 
-        pd.set_option('display.max_rows', None)
-        df_ok = pd.DataFrame(self.data_range, columns=self.column)
-        df_ok.index += 1
+            else:
+                print(f'{name_user} no es un Usuario válido')
 
-        df = df_ok[self.column_n]
-        print(df)
+        except:
+            print(f'{name_user} no es un ID válido')
+
 
     def close(window):
         window.destroy()

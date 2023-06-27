@@ -1,0 +1,3 @@
+Terminar filtro por fechas en Start()
+exportar tabla de errores
+Usar frame2 como terminal 
