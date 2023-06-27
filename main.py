@@ -34,8 +34,7 @@ class Funciones:
                         'MAC_AP',
                         'MAC_Cliente',
                         'Razon_de_Terminación_de_Sesión',
-                        '',
-                        '']
+                        ]
         
         self.patterns = [
                         re.compile(r"^\d+$"),  # ID
@@ -107,6 +106,9 @@ class Funciones:
                     break
             else:
                 self.data_filt.append(self.data_t[row])
+            
+        for lista in self.data_filt:
+            del lista[-2:]
 
         self.errors.set(int(len(self.error_range))-1)
 
