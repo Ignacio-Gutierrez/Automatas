@@ -4,7 +4,11 @@ Explicación del Proyecto - Análisis de Datos, centrado en la duración de sesi
 
 . Requisitos del sistema:
    - Python 3.x instalado en el sistema.
-   - Librerías necesarias: csv, re, pandas, tkinter
+   - Librerías necesarias:
+                           - csv: Usada para poder maneaar archivos '.csv'.
+                           - re:Usada para poder trabajar con expresiones regulares.
+                           - pandas:Usada para poder exportar archivos '.xlsx'.
+                           - tkinter: Usada para crear la interfaz gráfica y su uso.
    - Instaciones necesarias:
                             - pip install pandas
                             - sudo apt-get install python3-tk
