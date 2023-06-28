@@ -1,2 +1,0 @@
-Usar frame2 como terminal 
-que borre las ultimas 2 columnas
