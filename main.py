@@ -1,7 +1,7 @@
 import csv
 import re
 import pandas as pd
-from tkinter import filedialog, IntVar
+from tkinter import Tk, Frame, Label, Entry, Button, filedialog, IntVar, ttk, messagebox
 
 class Funciones:
     def __init__(self):
@@ -98,9 +98,6 @@ class Funciones:
     def filter_user(self):
         self.data_filt = []
         self.error_range = []
-
-        print('Filtrando Usuarios\n')
-
         for row in range(len(self.data_t)):
             for col in range(len(self.data_t[row])):
                 if not self.patterns[col].match(self.data_t[row][col]):
@@ -110,8 +107,6 @@ class Funciones:
                 self.data_filt.append((self.data_t[row])[:-2])
 
         self.errors.set(int(len(self.error_range))-1)
-
-        print('Filtrando Usuarios 2\n')
 
         next_user_id = 1
 
@@ -138,11 +133,6 @@ class Funciones:
                 self.users_list.append([next_user_id, user, date_first, date_last, session_time])
                 next_user_id += 1
 
-        pd.set_option('display.max_rows', None)
-        df = pd.DataFrame(self.users_list, columns=self.column_n[:-1])
-
-        print(df.to_string(index=False))
-
         for u in self.users_list:
             user_id = u[0]
             user = u[1]
@@ -151,33 +141,29 @@ class Funciones:
     def start(self, name_user, fecha_ini, fecha_fin):
         self.data_range = []
 
-        print('Procesando SOLICITUD')
-
         if self.patterns[6].match(fecha_ini) and self.patterns[8].match(fecha_fin):
             if fecha_ini <= fecha_fin:
                 if self.patterns[3].match(name_user):
                     for row in self.data_filt:
-                        if fecha_ini <= row[6] <= fecha_fin or fecha_ini <= row[6] <= fecha_fin:
+                        if fecha_ini <= row[6] <= fecha_fin or fecha_ini <= row[8] <= fecha_fin:
                             if name_user == row[3]:
                                 self.data_range.append(row)
                 elif self.patterns[0].match(name_user):
                     for row in self.data_filt:
-                        if fecha_ini <= row[6] <= fecha_fin or fecha_ini <= row[6] <= fecha_fin:
+                        if fecha_ini <= row[6] <= fecha_fin or fecha_ini <= row[8] <= fecha_fin:
                             if self.dicti_users[int(name_user)] == row[3]:
                                 self.data_range.append(row)
                 else:
-                    print(f'{name_user} no es válido.')
+##################################################################################
+                    messagebox.showinfo('',f'{name_user} no es válido.')
+##################################################################################
             else:
-                print('El periodo de fechas no es correcto.')
+##################################################################################
+                messagebox.showinfo('','El periodo de fechas no es correcto.')
+##################################################################################
         else:
-            print('La fecha ingresada no está en un formato válido.')
-
+##################################################################################
+            messagebox.showinfo('','La fecha ingresada no está en un formato válido.')
+##################################################################################
         self.connected.set(int(len(self.data_range)))        
-
-        if self.data_range:
-            pd.set_option('display.max_rows', None)
-            df = pd.DataFrame(self.data_range, columns=self.column)
-            df = df[self.column_n[:-1]]
-            print(df.to_string(index=False))
-        else:
-            print('No hay datos')
+###################################################################################

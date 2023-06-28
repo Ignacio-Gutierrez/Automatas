@@ -2,7 +2,7 @@ from main import Funciones
 import csv
 import re
 import pandas as pd
-from tkinter import Tk, Frame, Label, Entry, Button, filedialog, IntVar, ttk
+from tkinter import Tk, Frame, Label, Entry, Button, filedialog, IntVar, ttk, messagebox
 
 class Interfaz:
     def __init__(self):
@@ -18,16 +18,21 @@ class Interfaz:
         self.root.mainloop()
 
     def create_frames(self):
-        self.frame1 = Frame(self.root, width=1000, height=100)
+        self.frame0 = Frame(self.root, width=1000, height=574)
+        self.frame0.configure(bg='#91e38e')
+        self.frame0.pack(side='top', fill='both', expand=True)
+
+        self.frame1 = Frame(self.frame0, width=1000, height=100)
         self.frame1.configure(bg='#77dd77')
         self.frame1.pack(side='top')
+        
+        self.frame3 = Frame(self.frame0, width=1000, height=428)
+        self.frame3.configure(bg='#91e38e')
+        self.frame3.pack(side='top')
 
-        self.frame2 = Frame(self.root, width=1000, height=46)
+        self.frame2 = Frame(self.frame0, width=1000, height=46)
         self.frame2.configure(bg='#91e38e')
         self.frame2.pack(side='top')
-
-        self.frame3 = Frame(self.root, width=100, height=428)
-        self.frame3.pack(side='top')
 
     def create_widgets(self):
 
@@ -40,12 +45,13 @@ class Interfaz:
         btn_exp_e = Button(self.frame1, text='Exportar Errores', command=self.func.export_file_error,font=("Arial", 11), activebackground="#ff5757") #Errores
         btn_exp_e.place(x=855, y=60, width=125, height=30)
 
-        btn_start = Button(self.frame1, text='Iniciar', command=self.tree_range, font=30, activebackground="#5785ff")
+        btn_start = Button(self.frame1, text='Iniciar', command= self.tree_range, font=30, activebackground="#5785ff")
         btn_start.place(x=650, y=17, width=65, height=65)
+
         btn_stop = Button(self.frame2, text='Salir', command=lambda:self.root.destroy(), bg="#ff7777",font=30, activebackground="#ff4c4c")
         btn_stop.place(x=855, y=8, width=125, height=30)
 
-        lbl1 = Label(self.frame1, text='Usuario:', font=12)
+        lbl1 = Label(self.frame1, text='Usuario "ID | Usuario":', font=12)
         lbl1.place(x=250, y=11, width=255, height=25)
         lbl1.configure(bg='#77dd77')
         self.txt1 = Entry(self.frame1, bg='white', fg='black')
@@ -96,46 +102,61 @@ class Interfaz:
         
         self.tree_table = ttk.Treeview(self.frame3, show="headings")
         self.tree_table["columns"] = self.func.column_n[:-1]
+
+        self.tree_table.column(column=self.tree_table["columns"][0],width=80)
+        self.tree_table.column(column=self.tree_table["columns"][1],width=170)
+        self.tree_table.column(column=self.tree_table["columns"][2],width=190)
+        self.tree_table.column(column=self.tree_table["columns"][3],width=190)
+        self.tree_table.column(column=self.tree_table["columns"][4],width=130)
         for column in self.func.column_n[:-1]:
-            self.tree_table.column(column, minwidth= 80, width=180, stretch=True)
             self.tree_table.heading(column, text=column)
 
         self.scrollbar = ttk.Scrollbar(self.frame3, orient="vertical", command=self.tree_table.yview)
         self.tree_table.configure(yscrollcommand=self.scrollbar.set)
 
         for i, row in enumerate(self.func.users_list):
-            self.tree_table.insert("", "end", text=str(i + 1), values=row)
+            self.tree_table.insert("", "end", text=str(i), values=row)
         
         self.tree_table.pack(side="left", fill="y", expand=True)
         self.scrollbar.pack(side="right", fill="y")
 
         self.tree_table.configure(height=20)
+
 
     def tree_range(self):
-
-        if hasattr(self, "tree_table"):
-            self.tree_table.destroy()
         
-        if hasattr(self, "scrollbar"):
-            self.scrollbar.destroy()
-
         self.func.start(self.txt1.get(), self.txt2.get(), self.txt3.get())
 
-        self.tree_table = ttk.Treeview(self.frame3, show="headings")
-        self.tree_table["columns"] = self.func.column_n
-        for column in self.func.column_n:
-            self.tree_table.column(column, minwidth= 80, width=180, stretch=True)
-            self.tree_table.heading(column, text=column)
+        if self.func.data_range != []:
+            if hasattr(self, "tree_table"):
+                self.tree_table.destroy()
+            
+            if hasattr(self, "scrollbar"):
+                self.scrollbar.destroy()
 
-        self.scrollbar = ttk.Scrollbar(self.frame3, orient="vertical", command=self.tree_table.yview)
-        self.tree_table.configure(yscrollcommand=self.scrollbar.set)
+            self.tree_table = ttk.Treeview(self.frame3, show="headings")
+            self.tree_table["columns"] = self.func.column_n
 
-        for i, row in enumerate(self.func.data_range):
-            self.tree_table.insert("", "end", text=str(i + 1), values=row)
-        
-        self.tree_table.pack(side="left", fill="y", expand=True)
-        self.scrollbar.pack(side="right", fill="y")
+            self.tree_table.column(column=self.tree_table["columns"][0],width=80)
+            self.tree_table.column(column=self.tree_table["columns"][1],width=170)
+            self.tree_table.column(column=self.tree_table["columns"][2],width=190)
+            self.tree_table.column(column=self.tree_table["columns"][3],width=190)
+            self.tree_table.column(column=self.tree_table["columns"][4],width=130)
+            self.tree_table.column(column=self.tree_table["columns"][5],width=190)
+            for column in self.func.column_n:
+                self.tree_table.heading(column, text=column)
 
-        self.tree_table.configure(height=20)
+            self.scrollbar = ttk.Scrollbar(self.frame3, orient="vertical", command=self.tree_table.yview)
+            self.tree_table.configure(yscrollcommand=self.scrollbar.set)
+
+            for row in self.func.data_range:
+                datos_mostrados = [row[i] for i in range(len(row)) if i in [0,3,6,8,10,13]]
+                self.tree_table.insert("", "end", values=datos_mostrados)
+
+            
+            self.tree_table.pack(side="left", fill="y", expand=True)
+            self.scrollbar.pack(side="right", fill="y")
+
+            self.tree_table.configure(height=20)
 
 app = Interfaz()
