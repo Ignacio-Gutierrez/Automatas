@@ -181,6 +181,3 @@ class Funciones:
             print(df.to_string(index=False))
         else:
             print('No hay datos')
-
-    def close(window):
-        window.destroy()
