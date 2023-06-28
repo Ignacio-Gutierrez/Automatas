@@ -40,7 +40,7 @@ class Interfaz:
         btn_exp_e = Button(self.frame1, text='Exportar Errores', command=self.func.export_file_error,font=("Arial", 11), activebackground="#ff5757") #Errores
         btn_exp_e.place(x=855, y=60, width=125, height=30)
 
-        btn_start = Button(self.frame1, text='Iniciar', command=lambda: self.func.start(self.txt1.get(), self.txt2.get(), self.txt3.get()), font=30, activebackground="#5785ff")
+        btn_start = Button(self.frame1, text='Iniciar', command=self.tree_range, font=30, activebackground="#5785ff")
         btn_start.place(x=650, y=17, width=65, height=65)
         btn_stop = Button(self.frame2, text='Salir', command=lambda:self.root.destroy(), bg="#ff7777",font=30, activebackground="#ff4c4c")
         btn_stop.place(x=855, y=8, width=125, height=30)
@@ -104,6 +104,33 @@ class Interfaz:
         self.tree_table.configure(yscrollcommand=self.scrollbar.set)
 
         for i, row in enumerate(self.func.users_list):
+            self.tree_table.insert("", "end", text=str(i + 1), values=row)
+        
+        self.tree_table.pack(side="left", fill="y", expand=True)
+        self.scrollbar.pack(side="right", fill="y")
+
+        self.tree_table.configure(height=20)
+
+    def tree_range(self):
+
+        if hasattr(self, "tree_table"):
+            self.tree_table.destroy()
+        
+        if hasattr(self, "scrollbar"):
+            self.scrollbar.destroy()
+
+        self.func.start(self.txt1.get(), self.txt2.get(), self.txt3.get())
+
+        self.tree_table = ttk.Treeview(self.frame3, show="headings")
+        self.tree_table["columns"] = self.func.column_n
+        for column in self.func.column_n:
+            self.tree_table.column(column, minwidth= 80, width=180, stretch=True)
+            self.tree_table.heading(column, text=column)
+
+        self.scrollbar = ttk.Scrollbar(self.frame3, orient="vertical", command=self.tree_table.yview)
+        self.tree_table.configure(yscrollcommand=self.scrollbar.set)
+
+        for i, row in enumerate(self.func.data_range):
             self.tree_table.insert("", "end", text=str(i + 1), values=row)
         
         self.tree_table.pack(side="left", fill="y", expand=True)
