@@ -154,16 +154,9 @@ class Funciones:
                             if self.dicti_users[int(name_user)] == row[3]:
                                 self.data_range.append(row)
                 else:
-##################################################################################
-                    messagebox.showinfo('',f'{name_user} no es válido.')
-##################################################################################
+                    messagebox.showinfo('Error',f'{name_user} no es válido.')
             else:
-##################################################################################
-                messagebox.showinfo('','El periodo de fechas no es correcto.')
-##################################################################################
+                messagebox.showinfo('Error','El periodo de fechas no es válido.')
         else:
-##################################################################################
-            messagebox.showinfo('','La fecha ingresada no está en un formato válido.')
-##################################################################################
-        self.connected.set(int(len(self.data_range)))        
-###################################################################################
+            messagebox.showinfo('Error','La fecha ingresada no está en un formato válido.')
+        self.connected.set(int(len(self.data_range)))

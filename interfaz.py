@@ -124,39 +124,69 @@ class Interfaz:
 
 
     def tree_range(self):
-        
-        self.func.start(self.txt1.get(), self.txt2.get(), self.txt3.get())
+        if self.func.users_list == []:
+            messagebox.showinfo('Error','Importe un archivo ".csv" para comenzar.')
+        else:
 
-        if self.func.data_range != []:
+            self.func.start(self.txt1.get(), self.txt2.get(), self.txt3.get())
+
             if hasattr(self, "tree_table"):
                 self.tree_table.destroy()
-            
+                
             if hasattr(self, "scrollbar"):
                 self.scrollbar.destroy()
 
-            self.tree_table = ttk.Treeview(self.frame3, show="headings")
-            self.tree_table["columns"] = self.func.column_n
+            if self.func.data_range != []:
 
-            self.tree_table.column(column=self.tree_table["columns"][0],width=80)
-            self.tree_table.column(column=self.tree_table["columns"][1],width=170)
-            self.tree_table.column(column=self.tree_table["columns"][2],width=190)
-            self.tree_table.column(column=self.tree_table["columns"][3],width=190)
-            self.tree_table.column(column=self.tree_table["columns"][4],width=130)
-            self.tree_table.column(column=self.tree_table["columns"][5],width=190)
-            for column in self.func.column_n:
-                self.tree_table.heading(column, text=column)
+                self.tree_table = ttk.Treeview(self.frame3, show="headings")
+                self.tree_table["columns"] = self.func.column_n
 
-            self.scrollbar = ttk.Scrollbar(self.frame3, orient="vertical", command=self.tree_table.yview)
-            self.tree_table.configure(yscrollcommand=self.scrollbar.set)
+                self.tree_table.column(column=self.tree_table["columns"][0],width=80)
+                self.tree_table.column(column=self.tree_table["columns"][1],width=170)
+                self.tree_table.column(column=self.tree_table["columns"][2],width=190)
+                self.tree_table.column(column=self.tree_table["columns"][3],width=190)
+                self.tree_table.column(column=self.tree_table["columns"][4],width=130)
+                self.tree_table.column(column=self.tree_table["columns"][5],width=190)
+                for column in self.func.column_n:
+                    self.tree_table.heading(column, text=column)
 
-            for row in self.func.data_range:
-                datos_mostrados = [row[i] for i in range(len(row)) if i in [0,3,6,8,10,13]]
-                self.tree_table.insert("", "end", values=datos_mostrados)
+                self.scrollbar = ttk.Scrollbar(self.frame3, orient="vertical", command=self.tree_table.yview)
+                self.tree_table.configure(yscrollcommand=self.scrollbar.set)
 
-            
-            self.tree_table.pack(side="left", fill="y", expand=True)
-            self.scrollbar.pack(side="right", fill="y")
+                for row in self.func.data_range:
+                    datos_mostrados = [row[i] for i in range(len(row)) if i in [0,3,6,8,10,13]]
+                    self.tree_table.insert("", "end", values=datos_mostrados)
 
-            self.tree_table.configure(height=20)
+                
+                self.tree_table.pack(side="left", fill="y", expand=True)
+                self.scrollbar.pack(side="right", fill="y")
+
+                self.tree_table.configure(height=20)
+
+            else:
+                
+                messagebox.showinfo('Error','El periodo de fechas no es válido.')
+
+                self.tree_table = ttk.Treeview(self.frame3, show="headings")
+                self.tree_table["columns"] = self.func.column_n[:-1]
+
+                self.tree_table.column(column=self.tree_table["columns"][0],width=80)
+                self.tree_table.column(column=self.tree_table["columns"][1],width=170)
+                self.tree_table.column(column=self.tree_table["columns"][2],width=190)
+                self.tree_table.column(column=self.tree_table["columns"][3],width=190)
+                self.tree_table.column(column=self.tree_table["columns"][4],width=130)
+                for column in self.func.column_n[:-1]:
+                    self.tree_table.heading(column, text=column)
+
+                self.scrollbar = ttk.Scrollbar(self.frame3, orient="vertical", command=self.tree_table.yview)
+                self.tree_table.configure(yscrollcommand=self.scrollbar.set)
+
+                for i, row in enumerate(self.func.users_list):
+                    self.tree_table.insert("", "end", text=str(i), values=row)
+                
+                self.tree_table.pack(side="left", fill="y", expand=True)
+                self.scrollbar.pack(side="right", fill="y")
+
+                self.tree_table.configure(height=20)
 
 app = Interfaz()
