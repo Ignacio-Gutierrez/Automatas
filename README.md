@@ -18,7 +18,9 @@ Explicación del Proyecto - Análisis de Datos, centrado en la duración de sesi
    El código es una aplicación de análisis de datos que permite importar archivos CSV, filtrar y analizar los datos, y exportar los resultados en formatos de archivo Excel o CSV. 
    La aplicación utiliza una interfaz gráfica de usuario realizada con la biblioteca Tkinter.
 
+
 . Manual de Usuario:
+
     1. Importar archivo CSV:
         - Hacer clic en el botón "Importar" para seleccionar un archivo CSV que contenga los datos que se desean analizar.
         - Se abrirá una ventana para seleccionar el archivo CSV.
