@@ -5,12 +5,12 @@ from tkinter import Tk, Frame, Label, Entry, Button, filedialog, IntVar, ttk, me
 
 class Funciones:
     def __init__(self):
-        self.data_t = []
-        self.data_filt = []
-        self.data_range = []
-        self.error_range = []
-        self.users_list = []
-        self.dicti_users = {}
+        self.data_t = []        #Tabla de datos importados
+        self.data_filt = []     #Tabla de datos importados sin errores
+        self.data_range = []    #Tabla de datos importados sin errores, de un usuario en un rango de fechas
+        self.error_range = []   #Tabla de errores de los datos importados
+        self.users_list = []    #Tabla del listado de usuario
+        self.dicti_users = {}   #VIncula al Usuario con el ID de la Tabla del listado de usuario
 
         self.column_n = ['ID',
                         'Usuario',
@@ -39,10 +39,10 @@ class Funciones:
         
         self.patterns = [
                         re.compile(r"^\d+$"),  # ID
-                        re.compile(r"^(([0-9]|[A-F]){8}|([0-9]|[A-F]){16})(-([0-9]|[A-F]){8})?$"),  # ID_Sesion
+                        re.compile(r"^(([0-9]|[A-F]){8}-?([0-9]|[A-F]){8})$"),  # ID_Sesion
                         re.compile(r"^([0-9]|[a-f]){16}$"),  # ID_Conexión_unico
-                        re.compile(r"^\D+$"),  # Usuario
-                        re.compile(r"^(?:\d{1,3}\.){3}\d{1,3}$"),  # IP_NAS_AP
+                        re.compile(r"^.*\D+.*$"),  # Usuario
+                        re.compile(r"^(\d{1,3}\.){3}\d{1,3}$"),  # IP_NAS_AP
                         re.compile(r"^Wireless-802.11$"),  # Tipo__conexión
                         re.compile(r"^(2019|202[0-3])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$"),  # Inicio_de_Conexión_Dia
                         re.compile(r"^([0-1][0-9]|[2][0-3]):([0-5][0-9]):([0-5][0-9])$"),  # Inicio_de_Conexión_Hora
@@ -53,9 +53,9 @@ class Funciones:
                         re.compile(r"^\d+$"),  # Output_Octects
                         re.compile(r"^(([A-F]|[0-9]){2}-){5}([A-F]|[0-9]){2}:[A-Z]{4}$"),  # MAC_AP
                         re.compile(r"^(([A-F]|[0-9]){2}-){5}([A-F]|[0-9]){2}$"),  # MAC_Cliente
-                        re.compile(r"\D+|$"),  # Razon_de_Terminación_de_Sesión
-                        re.compile(r"\D+|$"),
-                        re.compile(r"\D+|$")
+                        re.compile(r".*$"),  # Razon_de_Terminación_de_Sesión
+                        re.compile(r".*$"),
+                        re.compile(r".*$")
                         ]
         
         self.data_imp = IntVar()
@@ -63,6 +63,13 @@ class Funciones:
         self.errors = IntVar()
 
     def import_file(self):
+        self.data_t = []
+        self.data_filt = []
+        self.data_range = []
+        self.error_range = []
+        self.users_list = []
+        self.dicti_users = {}
+        
         data_in = filedialog.askopenfilename(title='Abrir archivo .csv', filetypes=[('Archivos CSV', '*.csv')]) 
         with open(data_in, 'r') as file:   
             reader = csv.reader(file)
@@ -96,8 +103,6 @@ class Funciones:
                     writer.writerows(self.error_range)
 
     def filter_user(self):
-        self.data_filt = []
-        self.error_range = []
         for row in range(len(self.data_t)):
             for col in range(len(self.data_t[row])):
                 if not self.patterns[col].match(self.data_t[row][col]):
@@ -127,28 +132,26 @@ class Funciones:
                     user_exist[2] = date_first
                 if date_last > user_exist[3]:
                     user_exist[3] = date_last
-                else:
-                    user_exist[4] += session_time
+
+                user_exist[4] += session_time
             else:
                 self.users_list.append([next_user_id, user, date_first, date_last, session_time])
                 next_user_id += 1
 
         for u in self.users_list:
-            user_id = u[0]
-            user = u[1]
-            self.dicti_users[user_id] = user
+            self.dicti_users[u[0]] = u[1]
         
     def start(self, name_user, fecha_ini, fecha_fin):
         self.data_range = []
 
         if self.patterns[6].match(fecha_ini) and self.patterns[8].match(fecha_fin):
             if fecha_ini <= fecha_fin:
-                if self.patterns[3].match(name_user):
+                if self.patterns[3].match(name_user): #Usuario
                     for row in self.data_filt:
                         if fecha_ini <= row[6] <= fecha_fin or fecha_ini <= row[8] <= fecha_fin:
                             if name_user == row[3]:
                                 self.data_range.append(row)
-                elif self.patterns[0].match(name_user):
+                elif self.patterns[0].match(name_user): #ID
                     for row in self.data_filt:
                         if fecha_ini <= row[6] <= fecha_fin or fecha_ini <= row[8] <= fecha_fin:
                             if self.dicti_users[int(name_user)] == row[3]:
@@ -159,4 +162,5 @@ class Funciones:
                 messagebox.showinfo('Error','El periodo de fechas no es válido.')
         else:
             messagebox.showinfo('Error','La fecha ingresada no está en un formato válido.')
+
         self.connected.set(int(len(self.data_range)))

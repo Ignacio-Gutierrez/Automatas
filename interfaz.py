@@ -126,8 +126,8 @@ class Interfaz:
     def tree_range(self):
         if self.func.users_list == []:
             messagebox.showinfo('Error','Importe un archivo ".csv" para comenzar.')
+            
         else:
-
             self.func.start(self.txt1.get(), self.txt2.get(), self.txt3.get())
 
             if hasattr(self, "tree_table"):
@@ -164,8 +164,6 @@ class Interfaz:
                 self.tree_table.configure(height=20)
 
             else:
-                
-                messagebox.showinfo('Error','El periodo de fechas no es válido.')
 
                 self.tree_table = ttk.Treeview(self.frame3, show="headings")
                 self.tree_table["columns"] = self.func.column_n[:-1]
