@@ -148,12 +148,12 @@ class Funciones:
             if fecha_ini <= fecha_fin:
                 if self.patterns[3].match(name_user): #Usuario
                     for row in self.data_filt:
-                        if fecha_ini <= row[6] <= fecha_fin or fecha_ini <= row[8] <= fecha_fin:
+                        if (fecha_ini <= row[6] <= fecha_fin) or (fecha_ini <= row[8] <= fecha_fin) or (row[6] < fecha_ini and fecha_fin < row[8]):
                             if name_user == row[3]:
                                 self.data_range.append(row)
                 elif self.patterns[0].match(name_user): #ID
                     for row in self.data_filt:
-                        if fecha_ini <= row[6] <= fecha_fin or fecha_ini <= row[8] <= fecha_fin:
+                        if (fecha_ini <= row[6] <= fecha_fin) or (fecha_ini <= row[8] <= fecha_fin) or (row[6] < fecha_ini and fecha_fin < row[8]):
                             if self.dicti_users[int(name_user)] == row[3]:
                                 self.data_range.append(row)
                 else:
