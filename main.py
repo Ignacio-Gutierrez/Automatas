@@ -42,7 +42,7 @@ class Funciones:
                         re.compile(r"^(([0-9]|[A-F]){8}-?([0-9]|[A-F]){8})$"),  # ID_Sesion
                         re.compile(r"^([0-9]|[a-f]){16}$"),  # ID_Conexión_unico
                         re.compile(r"^.*\D+.*$"),  # Usuario
-                        re.compile(r"^(\d{1,3}\.){3}\d{1,3}$"),  # IP_NAS_AP
+                        re.compile(r"^(([2][5][0-5]\.)|([2][0-4][0-9]\.)|([0-1]?[0-9]?[0-9]\.)){3}(([2][5][0-5])|([2][0-4][0-9])|([0-1]?[0-9]?[0-9]))$"),  # IP_NAS_AP
                         re.compile(r"^Wireless-802.11$"),  # Tipo__conexión
                         re.compile(r"^(2019|202[0-3])-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$"),  # Inicio_de_Conexión_Dia
                         re.compile(r"^([0-1][0-9]|[2][0-3]):([0-5][0-9]):([0-5][0-9])$"),  # Inicio_de_Conexión_Hora
